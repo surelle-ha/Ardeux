@@ -1,0 +1,29 @@
+version: '3'
+services:
+  mysql_db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: "Izukishun@30"
+      MYSQL_DATABASE: "ardeux"
+    ports:
+      - "3307:3306" 
+
+  node_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    ports:
+      - "3000:3000"
+    working_dir: /app/ardeux_core
+    command: ["node", "index.js"]
+
+  laravel_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    ports:
+      - "8000:8000"
+    working_dir: /app/ardeux_main
+    command: ["php", "artisan", "serve", "--host", "0.0.0.0"]
+    depends_on:
+      - mysql_db
